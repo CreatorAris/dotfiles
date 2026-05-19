@@ -1,0 +1,74 @@
+# Starship prompt — Tokyo Night Storm via terminal ANSI palette.
+# Using named colors (purple/cyan/blue/yellow) so WezTerm's color_scheme
+# decides the actual hex — keeps prompt + terminal in sync automatically.
+
+format = """
+$directory\
+$git_branch\
+$git_status\
+$python\
+$nodejs\
+$rust\
+$cmd_duration\
+$line_break\
+$character"""
+
+add_newline = false
+
+[character]
+success_symbol = "[❯](bold purple)"
+error_symbol   = "[❯](bold red)"
+vimcmd_symbol  = "[❮](bold green)"
+
+[directory]
+style              = "bold cyan"
+truncation_length  = 3
+truncate_to_repo   = true
+read_only          = " "
+home_symbol        = "~"
+
+[git_branch]
+symbol = " "
+style  = "purple"
+format = "[on](dim) [$symbol$branch]($style) "
+
+[git_status]
+style     = "yellow"
+format    = "([$all_status$ahead_behind]($style) )"
+conflicted = "="
+ahead      = "⇡${count}"
+behind     = "⇣${count}"
+diverged   = "⇕⇡${ahead_count}⇣${behind_count}"
+untracked  = "?"
+stashed    = "$"
+modified   = "!"
+staged     = "+"
+renamed    = "»"
+deleted    = "✘"
+
+[cmd_duration]
+min_time      = 2000
+format        = "took [$duration]($style) "
+style         = "dim italic yellow"
+show_milliseconds = false
+
+[python]
+symbol = " "
+style  = "yellow"
+format = '[${symbol}${pyenv_prefix}(${version})(\($virtualenv\) )]($style)'
+
+[nodejs]
+symbol            = " "
+style             = "green"
+detect_extensions = ["js", "mjs", "cjs", "ts", "mts", "cts"]
+detect_files      = ["package.json", ".node-version"]
+
+[rust]
+symbol = " "
+style  = "red"
+
+[hostname]
+disabled = true
+
+[username]
+disabled = true
