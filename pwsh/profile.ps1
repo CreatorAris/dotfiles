@@ -2,6 +2,11 @@
 # All UI tweaks live here so syncing dotfiles syncs the shell experience.
 
 # -------------------------------------------------------------------
+# Aliases
+# -------------------------------------------------------------------
+Set-Alias cc claude
+
+# -------------------------------------------------------------------
 # Terminal-Icons — file-type icons in `Get-ChildItem` output
 # -------------------------------------------------------------------
 Import-Module Terminal-Icons -ErrorAction SilentlyContinue

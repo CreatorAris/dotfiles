@@ -23,6 +23,17 @@ $profileDir  = Split-Path -Parent $profilePath
 if (-not (Test-Path $profileDir)) {
   New-Item -ItemType Directory -Force -Path $profileDir | Out-Null
 }
+
+# Backup any existing profile before overwriting (only if it's not already our stub).
+if (Test-Path $profilePath) {
+  $existing = Get-Content $profilePath -Raw -ErrorAction SilentlyContinue
+  if ($existing -notmatch 'dotfiles[\\/]pwsh[\\/]profile\.ps1') {
+    $backup = "$profilePath.bak.$(Get-Date -Format 'yyyyMMddHHmmss')"
+    Copy-Item -Force $profilePath $backup
+    Write-Host "BACKUP  $profilePath  ->  $backup"
+  }
+}
+
 @'
 # Bootstrap: load real pwsh profile from dotfiles repo.
 . "$env:USERPROFILE\dotfiles\pwsh\profile.ps1"
