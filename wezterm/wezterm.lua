@@ -38,9 +38,34 @@ config.initial_cols = 140
 config.initial_rows = 38
 config.window_padding = { left = 16, right = 16, top = 10, bottom = 8 }
 config.window_decorations = 'INTEGRATED_BUTTONS|RESIZE'
-config.window_background_opacity = 0.88
-config.win32_system_backdrop = 'Acrylic'
-config.macos_window_background_blur = 30
+config.window_background_opacity = 1.0    -- bg image needs opaque window
+-- config.win32_system_backdrop = 'Acrylic'   -- disabled when using bg image
+
+----------------------------------------------------------------------
+-- Background — two layers: dimmed image + Tokyo Night tint overlay
+----------------------------------------------------------------------
+local home = os.getenv('USERPROFILE') or os.getenv('HOME')
+config.background = {
+  {
+    source = { File = home .. '/dotfiles/wezterm/assets/background.png' },
+    horizontal_align = 'Center',
+    vertical_align   = 'Middle',
+    repeat_x = 'NoRepeat',
+    repeat_y = 'NoRepeat',
+    width  = 'Cover',
+    height = 'Cover',
+    opacity = 1.0,
+    -- Aggressively dim + desaturate so foreground text stays readable.
+    hsb = { brightness = 0.22, saturation = 0.65, hue = 1.0 },
+  },
+  {
+    -- Tokyo Night Storm base color, semi-transparent, glues the palette together.
+    source = { Color = '#1a1b26' },
+    width  = '100%',
+    height = '100%',
+    opacity = 0.60,
+  },
+}
 
 ----------------------------------------------------------------------
 -- Tab bar — bar.wezterm handles tab titles + right-side status modules
