@@ -2,9 +2,11 @@
 # All UI tweaks live here so syncing dotfiles syncs the shell experience.
 
 # -------------------------------------------------------------------
-# Aliases
+# Aliases / shortcuts
 # -------------------------------------------------------------------
-Set-Alias cc claude
+# `cc` = Claude Code with permission prompts disabled.
+# pwsh aliases don't take args, so this has to be a function.
+function cc { claude --dangerously-skip-permissions @args }
 
 # -------------------------------------------------------------------
 # Terminal-Icons — file-type icons in `Get-ChildItem` output
