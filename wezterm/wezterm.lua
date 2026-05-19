@@ -134,11 +134,10 @@ config.front_end = 'WebGpu'
 config.max_fps = 120
 config.animation_fps = 60
 
--- IME — fix Windows IME (Microsoft Pinyin) candidate window drifting away
--- from the caret on first keystroke / after backspace.
--- 'System' hands rendering to the OS IME so it positions itself.
-config.use_ime = true
-config.ime_preedit_rendering = 'System'
+-- IME: leave at wezterm defaults (use_ime=true + ime_preedit_rendering='Builtin').
+-- Tried ime_preedit_rendering='System' 2026-05-20 to fix candidate window drift
+-- with Microsoft Pinyin — it caused a crash on first Chinese input + broke Enter
+-- on English. Reverted. The candidate-drift issue stands open; no quick fix.
 
 ----------------------------------------------------------------------
 -- Keybindings
