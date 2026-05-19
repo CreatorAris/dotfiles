@@ -10,6 +10,20 @@
 function cc { claude --dangerously-skip-permissions @args }
 function cx { codex  --dangerously-bypass-approvals-and-sandbox @args }
 
+# `nw` — launch Nephele Workshop main_qt.py, forwarding any extra args.
+#   nw                            -> normal launch
+#   nw --dev-screenshot home      -> single-frame dev screenshot
+#   nw --dev-auto-test            -> scripted UI sequence with screenshots
+#   nw --dev-agent-test "<msg>"   -> auto-send message to agent
+# Runs from the repo root so relative paths in main_qt.py resolve correctly,
+# and restores the previous cwd when the GUI exits.
+function nw {
+    $NepheleRoot = 'E:\Nephele Workshop'
+    Push-Location $NepheleRoot
+    try { python main_qt.py @args }
+    finally { Pop-Location }
+}
+
 # eza-backed ls replacements (colorful, icon-aware, git-status integrated).
 # pwsh's command resolution is alias > function, so the default `ls` alias
 # (-> Get-ChildItem) would otherwise win — remove it first.
