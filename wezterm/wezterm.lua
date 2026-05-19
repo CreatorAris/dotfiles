@@ -40,13 +40,16 @@ config.colors = {
   selection_fg  = '#c0caf5',
   scrollbar_thumb = '#414868',
   visual_bell     = '#bb9af7',
+  -- tab_bar.background transparent so the bg image + tint show through the tab bar.
+  -- The per-tab colors below are wezterm-native fallback; tabline.wez replaces
+  -- most of this via its theme_overrides (see tabline.setup).
   tab_bar = {
-    background = '#1a1b26',
-    active_tab   = { bg_color = '#24283b', fg_color = '#c0caf5', intensity = 'Bold' },
-    inactive_tab = { bg_color = '#1a1b26', fg_color = '#7a82a8' },
-    inactive_tab_hover = { bg_color = '#1f2335', fg_color = '#c0caf5', italic = false },
-    new_tab        = { bg_color = '#1a1b26', fg_color = '#7a82a8' },
-    new_tab_hover  = { bg_color = '#1f2335', fg_color = '#c0caf5' },
+    background = 'rgba:0 0 0 0',
+    active_tab   = { bg_color = 'rgba:0 0 0 0', fg_color = '#c0caf5', intensity = 'Bold' },
+    inactive_tab = { bg_color = 'rgba:0 0 0 0', fg_color = '#7a82a8' },
+    inactive_tab_hover = { bg_color = 'rgba:0 0 0 0', fg_color = '#c0caf5', italic = false },
+    new_tab        = { bg_color = 'rgba:0 0 0 0', fg_color = '#7a82a8' },
+    new_tab_hover  = { bg_color = 'rgba:0 0 0 0', fg_color = '#c0caf5' },
   },
 }
 
@@ -184,6 +187,20 @@ tabline.setup({
     section_separators   = { left = '', right = '' },
     component_separators = { left = '│', right = '│' },
     tab_separators       = { left = '', right = '' },
+    -- Make every section background transparent so the wezterm bg image
+    -- shows through. Differentiate sections by foreground color only.
+    theme_overrides = {
+      normal_mode = {
+        a = { fg = '#bb9af7', bg = 'rgba:0 0 0 0' },  -- purple (workspace)
+        b = { fg = '#c0caf5', bg = 'rgba:0 0 0 0' },  -- main fg (process)
+        c = { fg = '#a9b1d6', bg = 'rgba:0 0 0 0' },  -- secondary fg
+      },
+      tab = {
+        active         = { fg = '#bb9af7', bg = 'rgba:0 0 0 0' },
+        inactive       = { fg = '#7a82a8', bg = 'rgba:0 0 0 0' },
+        inactive_hover = { fg = '#c0caf5', bg = 'rgba:0 0 0 0' },
+      },
+    },
   },
   sections = {
     tabline_a = { 'workspace' },
