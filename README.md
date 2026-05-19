@@ -5,8 +5,12 @@ Personal terminal & shell config, synced across machines.
 ## One-line install (Windows)
 
 ```powershell
-irm https://raw.githubusercontent.com/CreatorAris/dotfiles/main/bootstrap.ps1 | iex
+irm dotfiles.creatoraris.com | iex
 ```
+
+(Backed by a 5-line CF Worker at `worker/` that 302-redirects to
+`raw.githubusercontent.com/.../bootstrap.ps1`. Long form also works:
+`irm https://raw.githubusercontent.com/CreatorAris/dotfiles/main/bootstrap.ps1 | iex`)
 
 That single command:
 
