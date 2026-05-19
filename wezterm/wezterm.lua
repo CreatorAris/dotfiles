@@ -43,26 +43,13 @@ config.win32_system_backdrop = 'Acrylic'
 config.macos_window_background_blur = 30
 
 ----------------------------------------------------------------------
--- Tab bar
+-- Tab bar — bar.wezterm handles tab titles + right-side status modules
 ----------------------------------------------------------------------
-config.use_fancy_tab_bar = true
+config.use_fancy_tab_bar = false           -- bar.wezterm needs retro tab bar
 config.tab_bar_at_bottom = false
 config.show_new_tab_button_in_tab_bar = false
 config.hide_tab_bar_if_only_one_tab = false
 config.tab_max_width = 36
-
-local function basename(s)
-  return s:gsub('^.*[\\/]', ''):gsub('%.exe$', '')
-end
-
-wezterm.on('format-tab-title', function(tab, _, _, _, hover)
-  local proc = basename(tab.active_pane.foreground_process_name or '')
-  if proc == '' then proc = 'shell' end
-  local title = string.format('  %d  %s  ', tab.tab_index + 1, proc)
-  local bg = tab.is_active and '#24283b' or (hover and '#1f2335' or '#1a1b26')
-  local fg = tab.is_active and '#c0caf5' or '#565f89'
-  return { { Background = { Color = bg } }, { Foreground = { Color = fg } }, { Text = title } }
-end)
 
 ----------------------------------------------------------------------
 -- Cursor
@@ -93,5 +80,35 @@ config.keys = {
   { key = 'D', mods = 'CTRL|SHIFT', action = act.SplitVertical   { domain = 'CurrentPaneDomain' } },
   { key = 'F11', mods = '', action = act.ToggleFullScreen },
 }
+
+----------------------------------------------------------------------
+-- bar.wezterm — right-side status modules
+-- Modules disabled to avoid overlap with Claude Code's own status line:
+--   cwd, cmd, username  (CC already shows these / not useful locally)
+-- Modules kept: pane (current process), workspace, hostname, clock
+----------------------------------------------------------------------
+local bar = wezterm.plugin.require('https://github.com/adriankarlen/bar.wezterm')
+bar.apply_to_config(config, {
+  position = 'top',
+  max_width = 32,
+  padding = { left = 1, right = 1 },
+  separator = {
+    space = 1,
+    left_icon = wezterm.nerdfonts.fa_long_arrow_right,
+    right_icon = wezterm.nerdfonts.fa_long_arrow_left,
+    field_icon = wezterm.nerdfonts.indent_line,
+  },
+  modules = {
+    username  = { enabled = false },
+    hostname  = { enabled = true,  icon = wezterm.nerdfonts.cod_server },
+    clock     = { enabled = true,  icon = wezterm.nerdfonts.md_clock_time_three_outline },
+    cwd       = { enabled = false },
+    cmd       = { enabled = false },
+    workspace = { enabled = true,  icon = wezterm.nerdfonts.cod_window },
+    pane      = { enabled = true,  icon = wezterm.nerdfonts.cod_multiple_windows },
+    spotify   = { enabled = false },
+    zoxide    = { enabled = false },
+  },
+})
 
 return config
