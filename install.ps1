@@ -1,29 +1,15 @@
-# Symlink dotfiles into %USERPROFILE%.
-# Needs either an elevated shell OR Windows Developer Mode enabled
-# (Settings > For developers > Developer Mode).
+# Install dotfiles by dropping bootstrap stubs into $env:USERPROFILE.
+# Stubs `dofile()` the real config from this repo — no admin / no Dev Mode needed.
+# Re-run safely; existing stubs are overwritten.
 
 $ErrorActionPreference = 'Stop'
-$repo = $PSScriptRoot
 
-$links = @{
-  "$env:USERPROFILE\.wezterm.lua" = "$repo\wezterm\wezterm.lua"
-}
+# .wezterm.lua bootstrap
+@'
+-- Bootstrap: load real config from dotfiles repo.
+local home = os.getenv('USERPROFILE') or os.getenv('HOME')
+return dofile(home .. '/dotfiles/wezterm/wezterm.lua')
+'@ | Set-Content -Encoding UTF8 "$env:USERPROFILE\.wezterm.lua"
+Write-Host "STUB  $env:USERPROFILE\.wezterm.lua  ->  dotfiles/wezterm/wezterm.lua"
 
-foreach ($target in $links.Keys) {
-  $source = $links[$target]
-  if (-not (Test-Path $source)) {
-    Write-Warning "Source missing: $source"
-    continue
-  }
-  if (Test-Path $target) {
-    $existing = Get-Item $target -Force
-    if ($existing.LinkType -eq 'SymbolicLink' -and $existing.Target -contains $source) {
-      Write-Host "OK  $target -> $source"
-      continue
-    }
-    Write-Host "Backup existing $target -> $target.bak"
-    Move-Item -Force $target "$target.bak"
-  }
-  New-Item -ItemType SymbolicLink -Path $target -Target $source | Out-Null
-  Write-Host "LINK  $target -> $source"
-}
+# Add more stubs here as the repo grows (starship.toml, pwsh profile, etc.)
