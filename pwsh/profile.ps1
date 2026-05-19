@@ -10,6 +10,19 @@
 function cc { claude --dangerously-skip-permissions @args }
 function cx { codex  --dangerously-bypass-approvals-and-sandbox @args }
 
+# eza-backed ls replacements (colorful, icon-aware, git-status integrated).
+# pwsh's command resolution is alias > function, so the default `ls` alias
+# (-> Get-ChildItem) would otherwise win — remove it first.
+if (Get-Command eza -ErrorAction SilentlyContinue) {
+    Remove-Item -Path Alias:ls -Force -ErrorAction SilentlyContinue
+    Remove-Item -Path Alias:ll -Force -ErrorAction SilentlyContinue
+    Remove-Item -Path Alias:la -Force -ErrorAction SilentlyContinue
+    function ls { eza --icons --git @args }
+    function ll { eza -l  --icons --git --time-style=relative @args }
+    function la { eza -la --icons --git --time-style=relative @args }
+    function lt { eza --tree --level=2 --icons @args }
+}
+
 # -------------------------------------------------------------------
 # Terminal-Icons — file-type icons in `Get-ChildItem` output
 # -------------------------------------------------------------------
@@ -26,6 +39,22 @@ if (Get-Command starship -ErrorAction SilentlyContinue) {
 # -------------------------------------------------------------------
 # PSReadLine — Tokyo Night Storm palette + smarter input UX
 # -------------------------------------------------------------------
+# -------------------------------------------------------------------
+# zoxide — smart cd. `z neph` jumps to most-frecent match for "neph".
+# -------------------------------------------------------------------
+if (Get-Command zoxide -ErrorAction SilentlyContinue) {
+    Invoke-Expression (& { (zoxide init powershell | Out-String) })
+}
+
+# -------------------------------------------------------------------
+# PSFzf — fuzzy finder bindings (Ctrl+T file picker, Ctrl+R history).
+# Needs PSReadLine, so load before PSReadLine block below.
+# -------------------------------------------------------------------
+if ((Get-Module -ListAvailable -Name PSFzf) -and (Get-Command fzf -ErrorAction SilentlyContinue) -and -not [Console]::IsOutputRedirected) {
+    Import-Module PSFzf -ErrorAction SilentlyContinue
+    Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
+}
+
 if ((Get-Module -ListAvailable -Name PSReadLine) -and -not [Console]::IsOutputRedirected) {
     Set-PSReadLineOption -Colors @{
         Command          = '#7aa2f7'  # blue
