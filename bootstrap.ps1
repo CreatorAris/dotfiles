@@ -26,7 +26,8 @@ $pkgs = @(
     'Starship.Starship',
     'ajeetdsouza.zoxide',
     'junegunn.fzf',
-    'eza-community.eza'
+    'eza-community.eza',
+    'aristocratos.btop4win'    # `btop` — pretty CPU/RAM/GPU monitor TUI
 )
 foreach ($p in $pkgs) {
     $check = winget list --id $p -e 2>$null

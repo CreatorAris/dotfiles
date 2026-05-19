@@ -14,7 +14,7 @@ irm dotfiles.creatoraris.com | iex
 
 That single command:
 
-1. `winget install` — WezTerm, Starship, zoxide, fzf, eza
+1. `winget install` — WezTerm, Starship, zoxide, fzf, eza, btop
 2. `Install-Module` — Terminal-Icons, PSFzf
 3. `git clone` the repo to `$env:USERPROFILE\dotfiles`
 4. Download + register Maple Mono NF CN (16 faces, user-level — no admin)
