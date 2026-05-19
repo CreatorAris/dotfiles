@@ -187,14 +187,17 @@ bar.apply_to_config(config, {
     right_icon = wezterm.nerdfonts.fa_long_arrow_left,
     field_icon = wezterm.nerdfonts.indent_line,
   },
+  -- color: bar.wezterm accepts either ANSI index (0-15) or hex string.
+  -- Defaults use ANSI 8 (bright black = #414868 in Tokyo Night Storm)
+  -- which is unreadable against our background image. Pin explicit hex.
   modules = {
     username  = { enabled = false },
-    hostname  = { enabled = true,  icon = wezterm.nerdfonts.cod_server },
-    clock     = { enabled = true,  icon = wezterm.nerdfonts.md_clock_time_three_outline },
+    hostname  = { enabled = true,  icon = wezterm.nerdfonts.cod_server,             color = '#7aa2f7' },  -- blue
+    clock     = { enabled = true,  icon = wezterm.nerdfonts.md_clock_time_three_outline, color = '#7dcfff' },  -- cyan
     cwd       = { enabled = false },
     cmd       = { enabled = false },
-    workspace = { enabled = true,  icon = wezterm.nerdfonts.cod_window },
-    pane      = { enabled = true,  icon = wezterm.nerdfonts.cod_multiple_windows },
+    workspace = { enabled = true,  icon = wezterm.nerdfonts.cod_window,             color = '#bb9af7' },  -- purple (matches cursor)
+    pane      = { enabled = true,  icon = wezterm.nerdfonts.cod_multiple_windows,    color = '#c0caf5' },  -- main fg, most prominent
     spotify   = { enabled = false },
     zoxide    = { enabled = false },
   },
