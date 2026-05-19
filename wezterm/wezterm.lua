@@ -55,15 +55,16 @@ config.background = {
     width  = 'Cover',
     height = 'Cover',
     opacity = 1.0,
-    -- Aggressively dim + desaturate so foreground text stays readable.
-    hsb = { brightness = 0.22, saturation = 0.65, hue = 1.0 },
+    -- Tuned for the cyan-blue Miku image: image is palette-friendly to
+    -- Tokyo Night already, so less aggressive dimming/desaturation.
+    hsb = { brightness = 0.32, saturation = 0.80, hue = 1.0 },
   },
   {
     -- Tokyo Night Storm base color, semi-transparent, glues the palette together.
     source = { Color = '#1a1b26' },
     width  = '100%',
     height = '100%',
-    opacity = 0.60,
+    opacity = 0.45,
   },
 }
 
