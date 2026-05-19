@@ -61,6 +61,11 @@ config.visual_bell = {
 -- Default inactive-pane dimming is too heavy; soften it.
 config.inactive_pane_hsb = { saturation = 0.85, brightness = 0.85 }
 
+-- Lift all foreground text 15% to improve contrast against background image,
+-- especially for cc's own gray output (thinking blocks, tool details, line numbers)
+-- which uses true-color hex codes not affected by the color scheme.
+config.foreground_text_hsb = { brightness = 1.15, saturation = 1.0, hue = 1.0 }
+
 ----------------------------------------------------------------------
 -- Window
 ----------------------------------------------------------------------
@@ -135,6 +140,17 @@ config.keys = {
   { key = 'w', mods = 'CTRL|SHIFT', action = act.CloseCurrentTab { confirm = false } },
   { key = 'LeftArrow',  mods = 'CTRL|SHIFT', action = act.ActivateTabRelative(-1) },
   { key = 'RightArrow', mods = 'CTRL|SHIFT', action = act.ActivateTabRelative(1) },
+  -- Alt+1..9 to jump directly to tab N (wezterm default is Ctrl+Shift+digit;
+  -- explicitly binding Alt+digit to match the convention I claimed earlier)
+  { key = '1', mods = 'ALT', action = act.ActivateTab(0) },
+  { key = '2', mods = 'ALT', action = act.ActivateTab(1) },
+  { key = '3', mods = 'ALT', action = act.ActivateTab(2) },
+  { key = '4', mods = 'ALT', action = act.ActivateTab(3) },
+  { key = '5', mods = 'ALT', action = act.ActivateTab(4) },
+  { key = '6', mods = 'ALT', action = act.ActivateTab(5) },
+  { key = '7', mods = 'ALT', action = act.ActivateTab(6) },
+  { key = '8', mods = 'ALT', action = act.ActivateTab(7) },
+  { key = '9', mods = 'ALT', action = act.ActivateTab(8) },
 
   -- Panes — split
   { key = 'd', mods = 'CTRL|SHIFT', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' } },
