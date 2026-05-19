@@ -2,35 +2,59 @@
 
 Personal terminal & shell config, synced across machines.
 
+## One-line install (Windows)
+
+```powershell
+irm https://raw.githubusercontent.com/CreatorAris/dotfiles/main/bootstrap.ps1 | iex
+```
+
+That single command:
+
+1. `winget install` — WezTerm, Starship, zoxide, fzf, eza
+2. `Install-Module` — Terminal-Icons, PSFzf
+3. `git clone` the repo to `$env:USERPROFILE\dotfiles`
+4. Download + register Maple Mono NF CN (16 faces, user-level — no admin)
+5. Drop stub files at `~/.wezterm.lua` and `$PROFILE` that load this repo
+6. Add the "Open in WezTerm" Windows right-click menu
+
+Idempotent. Safe to re-run on a partially-set-up machine — skips anything
+already installed.
+
+**Prereqs:** PowerShell 7+ (`pwsh`) and `git` on PATH. Most dev machines
+already have both. If missing:
+
+```powershell
+winget install Microsoft.PowerShell Git.Git
+# close & reopen pwsh, then run the irm | iex line above
+```
+
 ## Layout
 
 ```
 dotfiles/
+├── bootstrap.ps1                       # one-shot installer (above)
+├── install.ps1                         # stub-only step, called by bootstrap
 ├── wezterm/
-│   └── wezterm.lua    # WezTerm config (Tokyo Night Storm, Maple Mono NF CN)
-└── install.ps1        # Drop bootstrap stubs into %USERPROFILE%
+│   ├── wezterm.lua                     # Tokyo Night Storm + Maple Mono NF CN + bar.wezterm
+│   ├── assets/background.png           # current desktop bg (blurred, sigma=5)
+│   ├── regen-background.ps1            # swap / re-blur the bg
+│   ├── install-context-menu.ps1        # adds "Open in WezTerm" to right-click
+│   └── uninstall-context-menu.ps1
+├── pwsh/profile.ps1                    # cc/cx/nw + zoxide + PSFzf + eza + Starship + PSReadLine
+└── starship/starship.toml              # Tokyo Night Storm prompt
 ```
 
-`install.ps1` writes one-line stub files in `$env:USERPROFILE` that `dofile()` the
-real config in this repo. No symlinks, so no admin / Developer Mode required.
+## Daily editing
 
-## New machine setup (Windows)
+- WezTerm config — edit `wezterm/wezterm.lua`, save, **hot-reloads instantly**
+- pwsh profile — edit `pwsh/profile.ps1`, then `. $PROFILE` or open a fresh tab
+- Background — `pwsh -File wezterm/regen-background.ps1 -Source <path> -Sigma <N>`
+
+## Uninstall
 
 ```powershell
-# 1. Install WezTerm + Maple Mono NF CN
-winget install --id wez.wezterm -e
-# Font: https://github.com/subframe7536/maple-font/releases  (MapleMono-NF-CN.zip)
-# Drop the .ttf files into %LOCALAPPDATA%\Microsoft\Windows\Fonts and register
-# under HKCU:\Software\Microsoft\Windows NT\CurrentVersion\Fonts.
-
-# 2. Clone this repo to $env:USERPROFILE\dotfiles
-git clone git@github.com:CreatorAris/dotfiles.git $env:USERPROFILE\dotfiles
-
-# 3. Install bootstrap stubs
-cd $env:USERPROFILE\dotfiles
-pwsh -File install.ps1
+pwsh -File ~/dotfiles/wezterm/uninstall-context-menu.ps1
+Remove-Item ~/.wezterm.lua
+Remove-Item $PROFILE
+# winget uninstall the apps separately if desired
 ```
-
-## Updating config
-
-Edit files inside `~/dotfiles/`, commit, push. WezTerm hot-reloads on save.
