@@ -130,13 +130,28 @@ config.animation_fps = 60
 -- Keybindings
 ----------------------------------------------------------------------
 config.keys = {
+  -- Tabs
   { key = 't', mods = 'CTRL|SHIFT', action = act.SpawnTab 'CurrentPaneDomain' },
   { key = 'w', mods = 'CTRL|SHIFT', action = act.CloseCurrentTab { confirm = false } },
   { key = 'LeftArrow',  mods = 'CTRL|SHIFT', action = act.ActivateTabRelative(-1) },
   { key = 'RightArrow', mods = 'CTRL|SHIFT', action = act.ActivateTabRelative(1) },
+
+  -- Panes — split
   { key = 'd', mods = 'CTRL|SHIFT', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' } },
   { key = 'D', mods = 'CTRL|SHIFT', action = act.SplitVertical   { domain = 'CurrentPaneDomain' } },
-  { key = 'F11', mods = '', action = act.ToggleFullScreen },
+  -- Panes — focus (vim h/j/k/l = left/down/up/right)
+  { key = 'h', mods = 'CTRL|SHIFT', action = act.ActivatePaneDirection 'Left' },
+  { key = 'j', mods = 'CTRL|SHIFT', action = act.ActivatePaneDirection 'Down' },
+  { key = 'k', mods = 'CTRL|SHIFT', action = act.ActivatePaneDirection 'Up' },
+  { key = 'l', mods = 'CTRL|SHIFT', action = act.ActivatePaneDirection 'Right' },
+  -- Panes — zoom toggle (current pane fills the tab, press again to restore)
+  { key = 'z', mods = 'CTRL|SHIFT', action = act.TogglePaneZoomState },
+  -- Panes — close current pane (kills the process inside)
+  { key = 'q', mods = 'CTRL|SHIFT', action = act.CloseCurrentPane { confirm = false } },
+
+  -- Misc
+  { key = 'r',   mods = 'CTRL|SHIFT', action = act.ReloadConfiguration },
+  { key = 'F11', mods = '',           action = act.ToggleFullScreen },
 }
 
 ----------------------------------------------------------------------
