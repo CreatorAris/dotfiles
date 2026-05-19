@@ -174,6 +174,82 @@ config.keys = {
 }
 
 ----------------------------------------------------------------------
+-- Custom tabline components — sync wezterm.run_child_process with
+-- throttled cache so update-status (~1Hz) doesn't fork external procs
+-- every tick. Each function returns the cached string except every Nth
+-- second when it refreshes.
+----------------------------------------------------------------------
+
+local function fmt_speed(bps)
+  if bps < 1024            then return string.format('%dB/s',   bps)
+  elseif bps < 1024 * 1024 then return string.format('%.1fKB/s', bps / 1024)
+  else                          return string.format('%.1fMB/s', bps / 1048576)
+  end
+end
+
+-- GPU% via nvidia-smi (2s throttle).
+local _gpu_t, _gpu_v = 0, '?'
+local function gpu_pct()
+  local now = os.time()
+  if now - _gpu_t >= 2 then
+    _gpu_t = now
+    local ok, stdout = wezterm.run_child_process({
+      'nvidia-smi',
+      '--query-gpu=utilization.gpu',
+      '--format=csv,noheader,nounits',
+    })
+    if ok and stdout then
+      local pct = stdout:gsub('[^%d]', '')
+      if pct ~= '' then _gpu_v = pct .. '%' end
+    end
+  end
+  return 'GPU ' .. _gpu_v
+end
+
+-- Network speed: PowerShell Get-NetAdapterStatistics diff (3s throttle).
+local _net_t, _net_rx, _net_tx, _net_v = 0, nil, nil, '?'
+local function netspeed()
+  local now = os.time()
+  if now - _net_t >= 3 then
+    local interval = now - _net_t
+    _net_t = now
+    local ok, stdout = wezterm.run_child_process({
+      'powershell', '-NoProfile', '-Command',
+      "$a = Get-NetAdapterStatistics | Where-Object {$_.Name -notmatch 'Loopback|isatap|Pseudo'} | Select-Object -First 1; \"$($a.ReceivedBytes),$($a.SentBytes)\"",
+    })
+    if ok and stdout then
+      local rx, tx = stdout:match('(%d+),(%d+)')
+      if rx and tx then
+        rx, tx = tonumber(rx), tonumber(tx)
+        if _net_rx and _net_tx and interval > 0 then
+          local d_rx = math.max(0, (rx - _net_rx) / interval)
+          local d_tx = math.max(0, (tx - _net_tx) / interval)
+          _net_v = string.format('↓%s ↑%s', fmt_speed(d_rx), fmt_speed(d_tx))
+        end
+        _net_rx, _net_tx = rx, tx
+      end
+    end
+  end
+  return _net_v
+end
+
+-- Public IP via ipinfo.io (5min cache — IP rarely changes).
+local _ip_t, _ip_v = 0, '?'
+local function public_ip()
+  local now = os.time()
+  if now - _ip_t >= 300 then
+    _ip_t = now
+    local ok, stdout = wezterm.run_child_process({
+      'curl', '-s', '-m', '3', 'https://ipinfo.io/ip',
+    })
+    if ok and stdout then
+      _ip_v = stdout:gsub('%s', '')
+    end
+  end
+  return 'IP ' .. _ip_v
+end
+
+----------------------------------------------------------------------
 -- tabline.wez — lualine-style status bar (replaced bar.wezterm 2026-05).
 -- Built-in `cpu` and `ram` components mean we can see resource usage
 -- without opening btop or alt-tabbing to Task Manager.
@@ -209,15 +285,17 @@ tabline.setup({
     tab_active = {
       'index',
       { 'process', padding = { left = 0, right = 1 } },
+      { 'output',  padding = 0 },   -- bell when this tab has unseen output
       { 'zoomed',  padding = 0 },
     },
     tab_inactive = {
       'index',
       { 'process', padding = { left = 0, right = 1 } },
+      { 'output',  padding = 0 },
     },
-    tabline_x = { 'cpu', 'ram' },
+    tabline_x = { gpu_pct, 'cpu', 'ram', netspeed },
     -- Single-user box; hostname dropped. Show seconds so the clock visibly ticks.
-    tabline_y = { { 'datetime', style = '%H:%M:%S' } },
+    tabline_y = { public_ip, { 'datetime', style = '%H:%M:%S' } },
     tabline_z = { ' ' },
   },
   extensions = {},
