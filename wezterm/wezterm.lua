@@ -43,9 +43,9 @@ config.colors = {
   tab_bar = {
     background = '#1a1b26',
     active_tab   = { bg_color = '#24283b', fg_color = '#c0caf5', intensity = 'Bold' },
-    inactive_tab = { bg_color = '#1a1b26', fg_color = '#565f89' },
-    inactive_tab_hover = { bg_color = '#1f2335', fg_color = '#a9b1d6', italic = false },
-    new_tab        = { bg_color = '#1a1b26', fg_color = '#565f89' },
+    inactive_tab = { bg_color = '#1a1b26', fg_color = '#7a82a8' },
+    inactive_tab_hover = { bg_color = '#1f2335', fg_color = '#c0caf5', italic = false },
+    new_tab        = { bg_color = '#1a1b26', fg_color = '#7a82a8' },
     new_tab_hover  = { bg_color = '#1f2335', fg_color = '#c0caf5' },
   },
 }
@@ -91,10 +91,12 @@ config.background = {
   },
   {
     -- Tokyo Night Storm base color, semi-transparent, glues the palette together.
+    -- 0.65 (was 0.45) — heavier tint so foreground text stays readable
+    -- against the brighter sky regions of the background image.
     source = { Color = '#1a1b26' },
     width  = '100%',
     height = '100%',
-    opacity = 0.45,
+    opacity = 0.65,
   },
 }
 

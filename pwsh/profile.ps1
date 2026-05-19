@@ -78,13 +78,13 @@ if ((Get-Module -ListAvailable -Name PSReadLine) -and -not [Console]::IsOutputRe
         String           = '#9ece6a'  # green
         Number           = '#ff9e64'  # orange
         Type             = '#bb9af7'  # purple
-        Comment          = '#565f89'  # dim
+        Comment          = '#7a82a8'  # dim — bumped from #565f89 for readability over bg image
         Keyword          = '#bb9af7'  # purple
         Member           = '#7dcfff'  # cyan
         Default          = '#c0caf5'  # fg
         Emphasis         = '#ff9e64'  # orange
         Error            = '#f7768e'  # red
-        InlinePrediction = '#414868'  # very dim — ghost text from history
+        InlinePrediction = '#6271a0'  # ghost text — bumped from #414868 (was nearly invisible)
         ListPrediction   = '#7aa2f7'
         Selection        = "`e[48;2;52;59;88m"   # bg highlight
     }
