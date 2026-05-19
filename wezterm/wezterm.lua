@@ -171,36 +171,39 @@ config.keys = {
 }
 
 ----------------------------------------------------------------------
--- bar.wezterm — right-side status modules
--- Modules disabled to avoid overlap with Claude Code's own status line:
---   cwd, cmd, username  (CC already shows these / not useful locally)
--- Modules kept: pane (current process), workspace, hostname, clock
+-- tabline.wez — lualine-style status bar (replaced bar.wezterm 2026-05).
+-- Built-in `cpu` and `ram` components mean we can see resource usage
+-- without opening btop or alt-tabbing to Task Manager.
 ----------------------------------------------------------------------
-local bar = wezterm.plugin.require('https://github.com/adriankarlen/bar.wezterm')
-bar.apply_to_config(config, {
-  position = 'top',
-  max_width = 32,
-  padding = { left = 1, right = 1 },
-  separator = {
-    space = 1,
-    left_icon = wezterm.nerdfonts.fa_long_arrow_right,
-    right_icon = wezterm.nerdfonts.fa_long_arrow_left,
-    field_icon = wezterm.nerdfonts.indent_line,
+local tabline = wezterm.plugin.require('https://github.com/michaelbrusegard/tabline.wez')
+tabline.setup({
+  options = {
+    icons_enabled = true,
+    theme = 'Tokyo Night Storm',
+    tabs_enabled = true,
+    section_separators   = { left = '', right = '' },
+    component_separators = { left = '│', right = '│' },
+    tab_separators       = { left = '', right = '' },
   },
-  -- color: bar.wezterm accepts either ANSI index (0-15) or hex string.
-  -- Defaults use ANSI 8 (bright black = #414868 in Tokyo Night Storm)
-  -- which is unreadable against our background image. Pin explicit hex.
-  modules = {
-    username  = { enabled = false },
-    hostname  = { enabled = true,  icon = wezterm.nerdfonts.cod_server,             color = '#7aa2f7' },  -- blue
-    clock     = { enabled = true,  icon = wezterm.nerdfonts.md_clock_time_three_outline, color = '#7dcfff' },  -- cyan
-    cwd       = { enabled = false },
-    cmd       = { enabled = false },
-    workspace = { enabled = true,  icon = wezterm.nerdfonts.cod_window,             color = '#bb9af7' },  -- purple (matches cursor)
-    pane      = { enabled = true,  icon = wezterm.nerdfonts.cod_multiple_windows,    color = '#c0caf5' },  -- main fg, most prominent
-    spotify   = { enabled = false },
-    zoxide    = { enabled = false },
+  sections = {
+    tabline_a = { 'workspace' },
+    tabline_b = { 'process' },
+    tabline_c = { ' ' },
+    tab_active = {
+      'index',
+      { 'process', padding = { left = 0, right = 1 } },
+      { 'zoomed',  padding = 0 },
+    },
+    tab_inactive = {
+      'index',
+      { 'process', padding = { left = 0, right = 1 } },
+    },
+    tabline_x = { 'cpu', 'ram' },
+    -- Single-user box; hostname dropped. Show seconds so the clock visibly ticks.
+    tabline_y = { { 'datetime', style = '%H:%M:%S' } },
+    tabline_z = { ' ' },
   },
+  extensions = {},
 })
 
 return config
