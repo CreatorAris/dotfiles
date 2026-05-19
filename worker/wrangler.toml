@@ -1,0 +1,11 @@
+name = "dotfiles-redirect"
+main = "src/index.js"
+compatibility_date = "2026-05-19"
+workers_dev = false
+
+# Custom domain: dotfiles.creatoraris.com -> this worker
+# (Worker just redirects to the raw bootstrap.ps1 in this repo on GitHub.)
+[[routes]]
+pattern = "dotfiles.creatoraris.com"
+zone_name = "creatoraris.com"
+custom_domain = true
