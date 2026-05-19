@@ -40,5 +40,18 @@ if (Test-Path $profilePath) {
 '@ | Set-Content -Encoding UTF8 $profilePath
 Write-Host "STUB  $profilePath  ->  dotfiles/pwsh/profile.ps1"
 
+# -------------------------------------------------------------------
+# 3. ccstatusline — config file is consumed directly by the tool (no stub
+#    indirection like the others), so we copy it. After TUI edits via
+#    `npx ccstatusline`, copy back to dotfiles manually + push.
+# -------------------------------------------------------------------
+$ccslSrc  = "$PSScriptRoot\ccstatusline\settings.json"
+$ccslDest = "$env:USERPROFILE\.config\ccstatusline\settings.json"
+if (Test-Path $ccslSrc) {
+  New-Item -ItemType Directory -Force -Path (Split-Path $ccslDest) | Out-Null
+  Copy-Item -Force $ccslSrc $ccslDest
+  Write-Host "COPY  $ccslDest  <-  dotfiles/ccstatusline/settings.json"
+}
+
 Write-Host ""
 Write-Host "Done. Open a fresh WezTerm / pwsh window to see the new prompt."
