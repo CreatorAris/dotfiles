@@ -27,16 +27,46 @@ config.harfbuzz_features = { 'calt=1', 'liga=1', 'clig=1' }
 config.warn_about_missing_glyphs = false
 
 ----------------------------------------------------------------------
--- Theme — Tokyo Night Storm (built-in)
+-- Theme — Tokyo Night Storm (built-in) + per-element overrides
 ----------------------------------------------------------------------
 config.color_scheme = 'Tokyo Night Storm'
+
+-- Per-element overrides merge on top of the built-in scheme.
+config.colors = {
+  cursor_bg     = '#bb9af7',  -- purple cursor block
+  cursor_fg     = '#1a1b26',  -- text under cursor reads as dark bg
+  cursor_border = '#bb9af7',
+  selection_bg  = '#364a82',  -- official Tokyo Night Storm selection
+  selection_fg  = '#c0caf5',
+  scrollbar_thumb = '#414868',
+  visual_bell     = '#bb9af7',
+  tab_bar = {
+    background = '#1a1b26',
+    active_tab   = { bg_color = '#24283b', fg_color = '#c0caf5', intensity = 'Bold' },
+    inactive_tab = { bg_color = '#1a1b26', fg_color = '#565f89' },
+    inactive_tab_hover = { bg_color = '#1f2335', fg_color = '#a9b1d6', italic = false },
+    new_tab        = { bg_color = '#1a1b26', fg_color = '#565f89' },
+    new_tab_hover  = { bg_color = '#1f2335', fg_color = '#c0caf5' },
+  },
+}
+
+-- Visual bell — silent flash instead of an audible beep on bell.
+config.visual_bell = {
+  fade_in_function    = 'EaseIn',
+  fade_in_duration_ms = 75,
+  fade_out_function   = 'EaseOut',
+  fade_out_duration_ms = 75,
+}
+
+-- Default inactive-pane dimming is too heavy; soften it.
+config.inactive_pane_hsb = { saturation = 0.85, brightness = 0.85 }
 
 ----------------------------------------------------------------------
 -- Window
 ----------------------------------------------------------------------
 config.initial_cols = 140
 config.initial_rows = 38
-config.window_padding = { left = 16, right = 16, top = 10, bottom = 8 }
+config.window_padding = { left = 18, right = 18, top = 12, bottom = 8 }
 config.window_decorations = 'INTEGRATED_BUTTONS|RESIZE'
 config.window_background_opacity = 1.0    -- bg image needs opaque window
 -- config.win32_system_backdrop = 'Acrylic'   -- disabled when using bg image
