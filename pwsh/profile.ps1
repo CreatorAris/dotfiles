@@ -5,8 +5,10 @@
 # Aliases / shortcuts
 # -------------------------------------------------------------------
 # `cc` = Claude Code with permission prompts disabled.
-# pwsh aliases don't take args, so this has to be a function.
+# `cx` = Codex with approval prompts + sandbox disabled.
+# pwsh aliases don't take args, so these have to be functions.
 function cc { claude --dangerously-skip-permissions @args }
+function cx { codex  --dangerously-bypass-approvals-and-sandbox @args }
 
 # -------------------------------------------------------------------
 # Terminal-Icons — file-type icons in `Get-ChildItem` output
