@@ -134,6 +134,12 @@ config.front_end = 'WebGpu'
 config.max_fps = 120
 config.animation_fps = 60
 
+-- IME — fix Windows IME (Microsoft Pinyin) candidate window drifting away
+-- from the caret on first keystroke / after backspace.
+-- 'System' hands rendering to the OS IME so it positions itself.
+config.use_ime = true
+config.ime_preedit_rendering = 'System'
+
 ----------------------------------------------------------------------
 -- Keybindings
 ----------------------------------------------------------------------
