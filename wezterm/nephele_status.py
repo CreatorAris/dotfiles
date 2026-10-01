@@ -34,6 +34,11 @@ TELEMETRY_FIELDS = (
     "failure_reports_1h",
     "failure_users_today",
     "failure_reports_today",
+    "recorder_plugin_blocks_24h",
+    "recorder_empty_users_24h",
+    "recorder_empty_reports_24h",
+    "recorder_empty_risk_users_24h",
+    "recorder_empty_risk_reports_24h",
 )
 FAILURE_CATEGORIES = (*FAILURE_EVENTS, "local_tool_used", "app_crash")
 BREAKDOWN_FIELDS = tuple(f"{event}_{suffix}" for event in FAILURE_CATEGORIES for suffix in ("users", "reports"))
@@ -145,9 +150,17 @@ def telemetry_query(version: str) -> str:
       countIf(timestamp>now()-INTERVAL 1 HOUR AND {failure}) failure_reports_1h,
       count(DISTINCT if({today} AND {failure},person_id,NULL)) failure_users_today,
       countIf({today} AND {failure}) failure_reports_today,
+      count(DISTINCT if(event='recorder_start_failed' AND properties.error_code='plugin_stale',
+        concat(toString(person_id),':',toString(properties.session_id)),NULL)) recorder_plugin_blocks_24h,
+      count(DISTINCT if(event='recorder_empty_segment',person_id,NULL)) recorder_empty_users_24h,
+      countIf(event='recorder_empty_segment') recorder_empty_reports_24h,
+      count(DISTINCT if(event='recorder_empty_segment' AND JSONExtractBool(properties,'loss_risk'),
+        person_id,NULL)) recorder_empty_risk_users_24h,
+      countIf(event='recorder_empty_segment' AND JSONExtractBool(properties,'loss_risk'))
+        recorder_empty_risk_reports_24h,
       {breakdown}
     FROM events WHERE timestamp>now()-INTERVAL 24 HOUR
-      AND event IN ({event_names},'local_tool_used','app_crash','update_boot_after_update')
+      AND event IN ({event_names},'recorder_empty_segment','local_tool_used','app_crash','update_boot_after_update')
       AND (properties.x_client_type='nephele-desktop' OR properties.$lib='posthog-python')
       AND toString(person.properties.is_dev)!='true'
       AND toString(properties.is_dev)!='true'

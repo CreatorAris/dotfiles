@@ -8,7 +8,7 @@
 # `cx` = Codex with approval prompts + sandbox disabled.
 # pwsh aliases don't take args, so these have to be functions.
 function cc { claude --dangerously-skip-permissions @args }
-function cx { codex  --dangerously-bypass-approvals-and-sandbox @args }
+function cx { codex --no-daemon --dangerously-bypass-approvals-and-sandbox @args }
 
 # `nw` — launch Nephele Workshop main_qt.py, forwarding any extra args.
 #   nw                            -> normal launch

@@ -132,6 +132,9 @@ class StatusTests(unittest.TestCase):
         self.assertEqual(query.count(status._failure_predicate()), 6 + 2 * len(status.FAILURE_CATEGORIES))
         self.assertIn("recorder_rollover_failed_users", query)
         self.assertIn("recorder_rollover_failed_reports", query)
+        self.assertIn("recorder_plugin_blocks_24h", query)
+        self.assertIn("recorder_empty_risk_reports_24h", query)
+        self.assertFalse(self._matches_failure("recorder_empty_segment"))
 
     def test_second_window_does_not_read_a_locked_byte(self):
         import msvcrt
